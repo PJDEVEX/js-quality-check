@@ -5,12 +5,12 @@ const resultsModal = new bootstrap.Modal(document.getElementById("resultsModal")
 
 // it is a good practice to pass "e" to handler function
 /**
- * Function to Wireing up the "check key"
+ * Function to Wiring up the "check key"
  */
 document.getElementById("status").addEventListener("click", e => getStatus(e));
 
 /**
- * Function to Wireing up the "Run Check" button
+ * Function to Wiring up the "Run Check" button
  */
 document.getElementById("submit").addEventListener("click", e => postForm(e));
 
@@ -19,7 +19,7 @@ async function postForm(e) {
 
 
     /**
-     * Function to check wther the postForm fuction work
+     * Function to check whether the postForm function work
      */
     // for (let e of form.entries()) {
     //     console.log(e);
@@ -38,12 +38,14 @@ async function postForm(e) {
     if (response.ok) {
         displayErrors(data);
     } else {
+        displayException(data);
         throw new Error(data.error);
     }
 }
 
 function displayErrors(data) {
     let heading = `JSHint Results for ${data.file}`;
+    let results;
 
     if(data.total_errors === 0) {
         results = `<div class="no_errors">No errors reported!</div>`;
@@ -62,6 +64,7 @@ function displayErrors(data) {
     resultsModal.show();
 }
 
+
 /**
  * Retrieves data from an API endpoint and 
  * displays the status of the API response
@@ -77,16 +80,23 @@ async function getStatus(e) {
     if (response.ok) {
         displayStatus(data);
     } else {
+        displayException(data)
         throw new Error(data.error);
     }
+}
+
+function displayException(data) {
+    let heading = `An Exception Occurred`;
+
+    let results = `<div>The API returned status code ${data.status_code}</div>`;
+    results += `<div>Error number: <strong>${data.error_no}</strong></div>`;
+    results += `<div>Error text: <strong>${data.error}</strong></div>`;
 
     document.getElementById("resultsModalTitle").innerText = heading;
     document.getElementById("results-content").innerHTML = results;
 
     resultsModal.show();
 }
-
-
 
 function displayStatus(data) {
     let heading = "API Key Status";
